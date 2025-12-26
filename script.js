@@ -1,12 +1,6 @@
 const chatBox = document.getElementById("chatBox");
 const userInput = document.getElementById("userInput");
-const typing = document.getElementById("typing");
-const sendBtn = document.getElementById("sendBtn");
-
-sendBtn.addEventListener("click", sendMessage);
-userInput.addEventListener("keypress", e => {
-  if (e.key === "Enter") sendMessage();
-});
+const chatContainer = document.getElementById("chatContainer");
 
 function sendMessage() {
   const text = userInput.value.trim();
@@ -15,12 +9,8 @@ function sendMessage() {
   addMessage(text, "user");
   userInput.value = "";
 
-  typing.style.display = "block";
-
-  setTimeout(() => {
-    typing.style.display = "none";
-    botReply(text.toLowerCase());
-  }, 700);
+  const reply = getBotReply(text.toLowerCase());
+  typeBotMessage(reply);
 }
 
 function addMessage(text, sender) {
@@ -31,48 +21,68 @@ function addMessage(text, sender) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-function botReply(text) {
-  let reply = "Sorry, I don't have information about that 🤔";
+function typeBotMessage(text) {
+  const msg = document.createElement("div");
+  msg.className = "message bot";
+  chatBox.appendChild(msg);
 
-  if (text.includes("hello") || text.includes("hi")) {
-    reply = "Hello! 👋 How can I help you?";
-  } 
-  else if (text.includes("how are you")) {
-    reply = "I'm doing great 😄 Thanks for asking!";
-  }
-  else if (text.includes("who created you")) {
-    reply = "I was created by Ayush Nath Tiwari 🚀";
-  }
-  else if (text.includes("what do you do")) {
-    reply = "I answer questions and share information about Ayush 🙂";
-  }
-  else if (text.includes("ayush family")) {
-    reply = "Ayush's family members are: PAPA, MUMMY, ABHINAV and PARI ❤️";
-  }
-  else if (text.includes("pari") && text.includes("class")) {
-    reply = "Pari is studying in 11th class 📚";
-  }
-  else if (text.includes("pari") && text.includes("school")) {
-    reply = "Pari studies at AAtmdeep Vidyalaya 🏫";
-  }
-  else if (text.includes("pari") && text.includes("go") && text.includes("school")) {
-    reply = "Pari goes to school by bus 🚌";
-  }
-  else if (text.includes("college") && text.includes("ayush")) {
-    reply = "Ayush studies at IIPS, DAVV, Indore 🎓";
-  }
-  else if (text.includes("hostel")) {
-    reply = "Ayush lives in RNT Boys Hostel, Indore 🏠";
-  }
-  else if (text.includes("ayush") && text.includes("born")) {
-    reply = "Ayush was born on 6th June 2004 🎂";
-  }
-  else if (text.includes("abhinav") && text.includes("born")) {
-    reply = "Abhinav was born on 8th April 2007 🎉";
-  }
-  else if (text.includes("pari") && text.includes("born")) {
-    reply = "Pari was born on 8th July 2008 🎈";
-  }
+  let i = 0;
+  const interval = setInterval(() => {
+    msg.textContent += text[i];
+    i++;
+    chatBox.scrollTop = chatBox.scrollHeight;
+    if (i === text.length) clearInterval(interval);
+  }, 25);
+}
 
-  addMessage(reply, "bot");
+function getBotReply(text) {
+  if (text.includes("hello") || text.includes("hi")) 
+    return "Hello 👋 How can I help you today?";
+
+  if (text.includes("how are you")) 
+    return "I'm doing great 😄 Thanks for asking!";
+
+  if (text.includes("who created")) 
+    return "I was created by Ayush Nath Tiwari 🚀";
+
+  if (text.includes("what do you do")) 
+    return "I answer questions about Ayush and his life 🙂";
+
+  if (text.includes("family")) 
+    return "Ayush's family members are: PAPA, MUMMY, ABHINAV and PARI ❤️";
+
+  if (text.includes("pari") && text.includes("class")) 
+    return "Pari is studying in 11th class 📚";
+
+  if (text.includes("pari") && text.includes("school")) 
+    return "Pari studies at AAtmdeep Vidyalaya 🏫";
+
+  if (text.includes("pari") && text.includes("go")) 
+    return "Pari goes to school by bus 🚌";
+
+  if (text.includes("college")) 
+    return "Ayush studies at IIPS, DAVV, Indore 🎓";
+
+  if (text.includes("hostel")) 
+    return "Ayush lives in RNT Boys Hostel, Indore 🏠";
+
+  if (text.includes("ayush") && text.includes("born")) 
+    return "Ayush was born on 6th June 2004 🎂";
+
+  if (text.includes("abhinav") && text.includes("born")) 
+    return "Abhinav was born on 8th April 2007 🎉";
+
+  if (text.includes("pari") && text.includes("born")) 
+    return "Pari was born on 8th July 2008 🎈";
+
+  return "I’m not sure about that 🤔 Try asking something else.";
+}
+
+function quickAsk(text) {
+  userInput.value = text;
+  sendMessage();
+}
+
+function toggleTheme() {
+  chatContainer.classList.toggle("dark");
 }
